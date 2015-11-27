@@ -9,7 +9,7 @@ Depends: quota, bzip2, unzip, zip,
  php5-cli, php5-cgi, php5-curl, php5-gd, php5-imagick, php5-imap, php5-mcrypt, php5-mhash, php5-mysql, php5-sqlite,
  imagemagick, postfix, dovecot-imapd, dovecot-pop3d, clamav-milter,
  mysql-server, proftpd-basic, webalizer
-Recommends: libapache2-mod-suphp, php5-suhosin, dovecot-sieve
+Recommends: php5-suhosin, dovecot-sieve
 Installed-Size:
 Maintainer: Keppler IT GmbH <info@liveconfig.com>
 Homepage: http://www.liveconfig.com
