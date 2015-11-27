@@ -1,0 +1,46 @@
+#!/bin/sh
+#  _    _          ___           __ _     (R)
+# | |  (_)_ _____ / __|___ _ _  / _(_)__ _
+# | |__| \ V / -_) (__/ _ \ ' \|  _| / _` |
+# |____|_|\_/\___|\___\___/_||_|_| |_\__, |
+#                                    |___/
+# Copyright (c) 2009-2015 Keppler IT GmbH.
+# ----------------------------------------------------------------------------
+# liveconfig-meta/postinst
+# Debian package "post-installation" script
+# https://github.com/liveconfig/meta/
+# ----------------------------------------------------------------------------
+
+set -e
+
+case "$1" in
+	configure)
+		# continue
+	;;
+	abort-upgrade|abort-remove|abort-deconfigure)
+		exit 0;
+	;;
+	*)
+		echo "LiveConfig postinst called with unknown argument '$1'" >&2
+		exit 0
+	;;
+esac
+
+if [ "$1" = "configure" -a -z "$2" ]; then
+	if [ -e /etc/nginx/sites-available/default ]; then
+		mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
+	fi
+
+	if [ -h /etc/nginx/sites-enabled/default ]; then
+		rm /etc/nginx/sites-enabled/default
+	fi
+	
+	# restart nginx
+	if [ -x /etc/init.d/nginx ]; then
+		/etc/init.d/nginx restart
+	fi
+fi
+
+exit 0
+
+# <EOF>-----------------------------------------------------------------------
