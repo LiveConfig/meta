@@ -16,7 +16,7 @@
 
 %define _rpmdir %(echo $PWD)/centos7
 
-%define version    0.4.1
+%define version    0.4.2
 %define release	   1.el7
 
 Name:		liveconfig-meta
@@ -32,7 +32,7 @@ BuildRoot:	%(echo $PWD)/centos7/pkgroot
 Buildarch:	noarch
 Packager:	LiveConfig Package Admin <pkgadmin@liveconfig.com>
 Requires:	quota bzip2 unzip
-Requires:	httpd mod_ssl
+Requires:	httpd mod_ssl mod_fcgid
 Requires:	php php-cli php-gd php-mysql php-pear php-pdo php-soap php-xml php-xmlrpc
 Requires:	postfix dovecot dovecot-pigeonhole spamassassin
 Requires:	mariadb mariadb-server
