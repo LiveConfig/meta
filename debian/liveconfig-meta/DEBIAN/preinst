@@ -21,7 +21,7 @@ case "$1" in
 			if grep -q '# PHP configuration for this subscription: mod_php' /etc/apache2/sites-enabled/*; then
 				# mod_php is in use!
 				# check whether libapache2-mod-php5 is to be removed:
-				if dpkg-query -l "libapache2-mod-php5" | grep -q '^[rRpPi]'; then
+				if dpkg-query -l "libapache2-mod-php5" | grep -q '^[rRpP]'; then
 					echo '----------------------------------------------------------------------'
 					echo 'libapache2-mod-php5 is about to be removed, though it is still in use!'
 					echo 'Please explicitly install "libapache2-mod-php5" to avoid automatic'
