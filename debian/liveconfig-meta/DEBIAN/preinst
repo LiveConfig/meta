@@ -21,21 +21,24 @@ case "$1" in
 			if grep -q '# PHP configuration for this subscription: mod_php' /etc/apache2/sites-enabled/*; then
 				# mod_php is in use!
 				# check whether libapache2-mod-php5 is to be removed:
-				if dpkg-query -l "libapache2-mod-php5" | grep -q '^[rRpP]'; then
+				if apt-mark showauto libapache2-mod-php5 | grep -q '^libapache2-mod-php5'; then
 					echo '----------------------------------------------------------------------'
 					echo 'libapache2-mod-php5 is about to be removed, though it is still in use!'
-					echo 'Please explicitly install "libapache2-mod-php5" to avoid automatic'
-					echo 'uninstallation:'
+					echo 'Please mark "libapache2-mod-php5" as manually installed to avoid'
+					echo 'automatic uninstallation:'
 					echo ''
-					echo '   apt-get install libapache2-mod-php5'
+					echo '   apt-mark manual libapache2-mod-php5'
 					echo ''
 					echo 'Alternatively, switch all hosting subscriptions from mod_php to'
-					echo 'FastCGI or another option.'
+					echo 'FastCGI or another method.'
 					echo '----------------------------------------------------------------------'
 					exit 1
+				else
+					echo "libapache2-mod-php5 keeps installed."
 				fi
+			else
+				echo "No mod_php subscriptions found - it's safe to remove libapache2-mod-php5"
 			fi
-			echo "No mod_php subscriptions found - it's safe if libapache2-mod-php5 is removed"
 		fi
 	fi
 	;;
