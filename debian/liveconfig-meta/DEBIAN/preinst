@@ -1,0 +1,54 @@
+#!/bin/sh
+#  _    _          ___           __ _     (R)
+# | |  (_)_ _____ / __|___ _ _  / _(_)__ _
+# | |__| \ V / -_) (__/ _ \ ' \|  _| / _` |
+# |____|_|\_/\___|\___\___/_||_|_| |_\__, |
+#                                    |___/
+# Copyright (c) 2009-2016 Keppler IT GmbH.
+# ----------------------------------------------------------------------------
+# liveconfig-meta/preinst
+# Debian package "pre-installation" script
+# https://github.com/liveconfig/meta/
+# ----------------------------------------------------------------------------
+
+set -e
+
+case "$1" in
+	install|upgrade)
+	if [ "x$2" != "x" ]; then
+		if dpkg --compare-versions $2 lt 0.5.1 ; then
+			# check if there are active mod_php vHosts
+			if grep -q '# PHP configuration for this subscription: mod_php' /etc/apache2/sites-enabled/*; then
+				# mod_php is in use!
+				# check whether libapache2-mod-php5 is to be removed:
+				if dpkg-query -l "libapache2-mod-php5" | grep -q '^[rRpPi]'; then
+					echo '----------------------------------------------------------------------'
+					echo 'libapache2-mod-php5 is about to be removed, though it is still in use!'
+					echo 'Please explicitly install "libapache2-mod-php5" to avoid automatic'
+					echo 'uninstallation:'
+					echo ''
+					echo '   apt-get install libapache2-mod-php5'
+					echo ''
+					echo 'Alternatively, switch all hosting subscriptions from mod_php to'
+					echo 'FastCGI or another option.'
+					echo '----------------------------------------------------------------------'
+					exit 1
+				fi
+			fi
+			echo "No mod_php subscriptions found - it's safe if libapache2-mod-php5 is removed"
+		fi
+	fi
+	;;
+
+	abort-upgrade)
+	;;
+
+	*)
+		echo "preinst called with unknown argument \`$1'" >&2
+		exit 1
+	;;
+esac
+
+exit 0
+
+# <EOF>-----------------------------------------------------------------------
