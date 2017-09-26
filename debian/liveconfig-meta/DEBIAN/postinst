@@ -42,6 +42,11 @@ if [ "$1" = "configure" -a -z "$2" ]; then
 		       -e "s/^TraceEnable On/TraceEnable Off/i" \
 		       /etc/apache2/conf.d/security
 	fi
+	if [ -f /etc/apache2/conf-available/security.conf ]; then
+		sed -i -e "s/^ServerTokens .*/ServerTokens Prod/" \
+		       -e "s/^TraceEnable On/TraceEnable Off/i" \
+		       /etc/apache2/conf-available/security.conf
+	fi
 
 	# adjust suPHP settings:
 	if [ -f /etc/suphp/suphp.conf ]; then
