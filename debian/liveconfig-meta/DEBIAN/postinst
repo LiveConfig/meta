@@ -4,7 +4,7 @@
 # | |__| \ V / -_) (__/ _ \ ' \|  _| / _` |
 # |____|_|\_/\___|\___\___/_||_|_| |_\__, |
 #                                    |___/
-# Copyright (c) 2009-2017 Keppler IT GmbH.
+# Copyright (c) 2009-2018 Keppler IT GmbH.
 # ----------------------------------------------------------------------------
 # liveconfig-meta/postinst
 # Debian package "post-installation" script
@@ -32,7 +32,7 @@ if [ "$1" = "configure" -a -z "$2" ]; then
 	# enable some apache modules after installation:
 	if [ -x /usr/sbin/a2enmod ]; then
 		/usr/sbin/a2enmod actions include rewrite ssl suexec
-		[ -f /usr/lib/apache2/modules/mod_http2.so ] && /usr/bin/a2enmod http2
+		[ -f /usr/lib/apache2/modules/mod_http2.so ] && /usr/sbin/a2enmod http2
 		/usr/sbin/a2dismod status
 	fi
 
