@@ -1,5 +1,5 @@
 Package: liveconfig-meta
-Version: 0.5.5
+Version: 0.5.7
 Section: net
 Priority: optional
 Architecture: all
@@ -7,10 +7,10 @@ Essential: no
 Depends: libc6 (>= 2.13), ca-certificates, quota, bzip2, unzip, zip,
  apache2-mpm-prefork | apache2 (>= 2.4), apache2-suexec | apache2-suexec-pristine, libapache2-mod-fcgid,
  php5-cgi | php-cgi, php5-cli | php-cli, php5-curl | php-curl, php5-gd | php-gd, php5-imagick | php-imagick,
- php5-imap | php-imap, php5-mcrypt | php-mcrypt, php5-mysql | php-mysql, php5-sqlite | php-sqlite3,
+ php5-imap | php-imap, php5-mysql | php-mysql, php5-sqlite | php-sqlite3,
  imagemagick, postfix, dovecot-imapd, dovecot-pop3d, dovecot-sieve, clamav-milter, opendkim,
  mysql-server | mariadb-server, proftpd-basic, webalizer
-Recommends: libapache2-mod-suphp, php5-mhash, php5-suhosin
+Recommends: libapache2-mod-suphp, php5-mcrypt | php-mcrypt, php5-mhash, php5-suhosin
 Installed-Size:
 Maintainer: Keppler IT GmbH <info@liveconfig.com>
 Homepage: https://www.liveconfig.com
