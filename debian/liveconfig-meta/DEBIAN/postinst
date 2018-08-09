@@ -13,6 +13,40 @@
 
 set -e
 
+enable_http2() {
+	if [ ! -f /usr/lib/apache2/modules/mod_http2.so ] || [ ! -f /etc/apache2/mods-enabled/http2.load ]; then
+		# mod_http2 not available or already enabled
+		return 0
+	fi
+
+	if [ -f /etc/apache2/mods-enabled/php5.load ] || [ -f /etc/apache2/mods-enabled/php7.0.load ] || [ -f /etc/apache2/mods-enabled/php7.2.load ]; then
+		echo "############################################################" 1>&2
+		echo "## WARNING:" 1>&2
+		echo "## You're using mod_php! This is a SECURITY RISK, and" 1>&2
+		echo "## you will not be able to use HTTP/2 this way." 1>&2
+		echo "## Please consider disabling the PHP module and" 1>&2
+		echo "## switch from mpm_prefork/mpm_worker to mpm_event:" 1>&2
+		echo "##" 1>&2
+		[ -f /etc/apache2/mods-enabled/php5.load ] && echo "## apt purge libapache2-mod-php5" 1>&2
+		[ -f /etc/apache2/mods-enabled/php7.0.load ] && echo "## apt purge libapache2-mod-php7.0" 1>&2
+		[ -f /etc/apache2/mods-enabled/php7.2.load ] && echo "## apt purge libapache2-mod-php7.2" 1>&2
+		[ -f /etc/apache2/mods-enabled/mpm_prefork.load ] && echo "## a2dismod mpm_prefork" 1>&2
+		[ -f /etc/apache2/mods-enabled/mpm_worker.load ] && echo "## a2dismod mpm_worker" 1>&2
+		echo "## a2enmod mpm_event http2" 1>&2
+		echo "############################################################" 1>&2
+	else
+		# switch MPM from prefork to event:
+		if [ -f /etc/apache2/mods-enabled/mpm_prefork.load ] || [ -f /etc/apache2/mods-enabled/mpm_worker.load ]; then
+			[ -f /etc/apache2/mods-enabled/mpm_prefork.load ] && /usr/sbin/a2dismod mpm_prefork
+			[ -f /etc/apache2/mods-enabled/mpm_worker.load ] && /usr/sbin/a2dismod mpm_worker
+			/usr/sbin/a2enmod mpm_event
+		fi
+		# enable HTTP/2
+		/usr/sbin/a2enmod http2
+	fi
+	return 0
+}
+
 case "$1" in
 	configure)
 		# continue
@@ -31,8 +65,9 @@ if [ "$1" = "configure" -a -z "$2" ]; then
 
 	# enable some apache modules after installation:
 	if [ -x /usr/sbin/a2enmod ]; then
-		/usr/sbin/a2enmod actions include rewrite ssl suexec
-		[ -f /usr/lib/apache2/modules/mod_http2.so ] && /usr/sbin/a2enmod http2
+		/usr/sbin/a2enmod actions include proxy_http rewrite ssl suexec
+		[ -f /usr/lib/apache2/modules/mod_proxy_fcgi.so ] && /usr/sbin/a2enmod proxy_fcgi
+		enable_http2
 		/usr/sbin/a2dismod status
 	fi
 
@@ -59,10 +94,25 @@ if [ "$1" = "configure" -a -z "$2" ]; then
 		fi
 	fi
 
-	# reload Apache configuration
-	if [ -x /etc/init.d/apache2 ]; then
-		/etc/init.d/apache2 reload
+	# restart Apache
+	service apache2 restart
+
+elif [ "$1" = "configure" -a -n "$2" ]; then
+	# upgrade
+	# enable some modules on existing installations:
+	if [ -x /usr/sbin/a2enmod ]; then
+
+		# enable proxy_fcgi (for FPM)
+		[ -f /usr/lib/apache2/modules/mod_proxy_fcgi.so ] && [ ! -f /etc/apache2/mods-enabled/proxy_fcgi.load ] && /usr/sbin/a2enmod proxy_fcgi
+
+		# enable HTTP/2
+		enable_http2
+
+		# restart Apache
+		service apache2 restart
+
 	fi
+
 fi
 
 exit 0
