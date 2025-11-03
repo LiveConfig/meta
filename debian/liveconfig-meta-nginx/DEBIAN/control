@@ -1,5 +1,5 @@
 Package: liveconfig-meta-nginx
-Version: 0.6.0
+Version: 0.6.1
 Section: net
 Priority: optional
 Architecture: all
@@ -9,8 +9,8 @@ Depends: ca-certificates, quota, bzip2, unzip, zip,
  php5-cgi | php-cgi, php5-cli | php-cli, php5-curl | php-curl, php5-gd | php-gd, php5-imagick | php-imagick,
  php5-imap | php-imap, php5-mysql | php-mysql, php5-sqlite | php-sqlite3,
  imagemagick, postfix, dovecot-imapd, dovecot-pop3d, dovecot-sieve, clamav-milter, opendkim,
- mysql-server | mariadb-server, proftpd-basic, webalizer
-Recommends: php5-mcrypt | php-mcrypt, php5-mhash, php5-suhosin
+ mysql-server | mariadb-server, ftp-server, webalizer
+Recommends: php5-mcrypt | php-mcrypt, php5-mhash, php5-suhosin, proftpd-basic
 Installed-Size:
 Maintainer: LiveConfig GmbH <info@liveconfig.com>
 Homepage: https://www.liveconfig.com
